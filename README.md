@@ -19,7 +19,10 @@ Video Resultados (para descargar):
 - Segmento 3 (video para descargar) [https://github.com/jrodrigopuca/futbolpy/blob/master/360-152.avi]
 
 # TP2: Color
-## Alterando el color de las camisetas en videos
+## Usando conversion RGB-HSI/HSI-RGB con
+ejecución en paralelo para alterar color de camisetas en video
+
+Paper [https://github.com/jrodrigopuca/procesamiento-img/blob/master/papers/color.pdf]
 
 Primeros intentos [https://github.com/jrodrigopuca/procesamiento-img/tree/master/script]
 
@@ -29,11 +32,15 @@ Código cambiar de color con RGB-HSV/HSV-RGB [https://github.com/jrodrigopuca/pr
 
 Resultado del cambio con RGB-HSV/HSV-RGB (video para descargar)[https://github.com/jrodrigopuca/procesamiento-img/blob/master/result/HSV.mp4]
 
+Resultado del cambio con RGB-HSV/HSV-RGB (video en Youtube)[https://youtu.be/wPPqC1ZZzk8]
+
 Código cambiar de color con RGB-HSI/HSI-RGB[https://github.com/jrodrigopuca/procesamiento-img/blob/master/RGB-HSI.ipynb]
+
+Paralelismo para la reconstrucción del video [https://github.com/jrodrigopuca/futbolpy/tree/master/paralelo]
 
 Resultado del cambio con RGB-HSI/HSI-RGB (video para descargar)[https://github.com/jrodrigopuca/procesamiento-img/blob/master/result/hsi.mp4]
 
-Paralelismo para la reconstrucción del video [https://github.com/jrodrigopuca/futbolpy/tree/master/paralelo]
+Resultado del cambio con RGB-HSI/HSI-RGB (video en Youtube)[https://youtu.be/UI5y_p6d0z8]
 
 # TP3: Filtros Suavizado y Bordes
 

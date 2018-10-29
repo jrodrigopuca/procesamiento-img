@@ -1,0 +1,1995 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Usando conversion RGB-HSI/HSI-RGB con ejecución en paralelo para alterar
+ color en video
+\end_layout
+
+\begin_layout Section
+Introducción
+\end_layout
+
+\begin_layout Standard
+El procesamiento de imágenes cada vez está tomado un rol más preponderante
+ en los campos de investigación; esto se debe a distintos factores: Mayores
+ campos de aplicación: por ejemplo análisis de imágenes satelitales destinadas
+ para las clasificaciones de áreas agrícolas [1] 
+\end_layout
+
+\begin_layout Standard
+Mejor potencia en los procesadores y memoria: Las tarjetas gráficas han
+ mejorado de manera exponencial en la última década, su aplicación común
+ es el procesamiento de muchos cálculos matemáticos, específicamente (en
+ el uso doméstico) orientadas a los videojuegos.
+ Los fabricantes de procesadores como Intel, aumentan cada vez más las prestacio
+nes de sus productos, tanto los ordenadores personales como los mainframes.
+ [2]
+\end_layout
+
+\begin_layout Standard
+Mayor espacio en medios de almacenamiento: Cada vez las imágenes digitales
+ aumentan su resolución, haciendo que se necesite de mayor capacidad de
+ almacenamiento.
+ El análisis y procesamiento del color de imágenes y videos es el foco de
+ estudio de este documento, poniéndolo en forma sencilla: 
+\end_layout
+
+\begin_layout Itemize
+Seleccionara un color 
+\end_layout
+
+\begin_layout Itemize
+Cambiará de espacio de color 
+\end_layout
+
+\begin_layout Itemize
+Modificará una propiedad 
+\end_layout
+
+\begin_layout Itemize
+Volver al espacio de color original
+\end_layout
+
+\begin_layout Section
+Modelos
+\end_layout
+
+\begin_layout Subsection
+El modelo de color RGB
+\end_layout
+
+\begin_layout Standard
+Este modelo es un subespacio del espacio euclidiano conformado por el cubo
+ unitario.
+ .
+ Los colores aparecen con sus componentes primarias de rojo, verde y azul.
+ Los valores de R, G y B se encuentran a lo largo de tres ejes.
+ [3]
+\end_layout
+
+\begin_layout Subsection
+El modelo de color HSI
+\end_layout
+
+\begin_layout Standard
+En el modelo de color HSI los colores se distinguen unos de otros por su
+ tono, intensidad, y saturación.
+ El tono está asociado con la longitud de onda dominante en una mezcla de
+ ondas luminosas.
+ La intensidad representa la iluminación percibida.
+ La intensidad da la sensación de que algun objeto refleja mas o menos luz.
+ La saturacion se refiere a la cantidad de luz blanca mezclada con el color
+ dominante.
+ [4] 
+\end_layout
+
+\begin_layout Subsection
+Conversión de un espacio a otro
+\end_layout
+
+\begin_layout Subsubsection
+Conversión de RGB a HSI
+\end_layout
+
+\begin_layout Standard
+Teniendo en cuenta [5]:
+\end_layout
+
+\begin_layout Standard
+Determinar valores para canal I:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $I=\frac{1}{3}(R+G+B$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Determinar valores para canal H:
+\end_layout
+
+\begin_layout Standard
+cuando G>B
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $H=cos^{-1}\left(\frac{(R-G)+(R-B)}{\sqrt[2]{(R-G)^{2}+(R-B)(G-B)}}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+cuando B>G
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $H=360-H$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Determinar valores para canal S:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $S=1-3min\left(R,G,B\right)/I$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Conversión desde HSI a RGB
+\end_layout
+
+\begin_layout Standard
+Teniendo en cuenta [5]:
+\end_layout
+
+\begin_layout Standard
+0<H<120
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $b=\frac{1-S}{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $r=\frac{1}{3}\left[1+\frac{ScosH}{cos(60-H)}\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g=1-b-r$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+120<H<240
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $H=H-120$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $r=\frac{1-S}{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g=\frac{1}{3}\left[1+\frac{ScosH}{cos(60-H)}\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g=1-g-r$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+240<H<360
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $H=H-240$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g=\frac{1-S}{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $b=\frac{1}{3}\left[1+\frac{ScosH}{cos(60-H)}\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $r=1-g-r$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Implementación
+\end_layout
+
+\begin_layout Standard
+En simples términos, sabemos que un video no es más que una composición
+ de imágenes, para cambiar un color en un video, debemos hacerlo para cada
+ uno de los frames que compone el video en cuestión.
+ La implementación que propone este artículo se compone de tres módulos
+ desarrollados en Python y un último módulo realizado en C++ para obtener
+ resultados más rápidos.
+\end_layout
+
+\begin_layout Subsection
+Módulo: Frames
+\end_layout
+
+\begin_layout Standard
+El primer módulo es responsable de obtener los frames de un video.
+ Se lo ha empleado para conocer la cantidad de frames que posee el video
+ (dado que OpenCV no posee un buen mecanismo para obtenerlo) y para obtener
+ una galería de imágenes con los frames.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Python,basicstyle={\small},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+# coding: utf-8
+\end_layout
+
+\begin_layout Plain Layout
+
+import cv2
+\end_layout
+
+\begin_layout Plain Layout
+
+import numpy as np
+\end_layout
+
+\begin_layout Plain Layout
+
+import sys
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#defino el video
+\end_layout
+
+\begin_layout Plain Layout
+
+your_path=sys.argv[1]
+\end_layout
+
+\begin_layout Plain Layout
+
+your_destiniy_path=sys.argv[2]
+\end_layout
+
+\begin_layout Plain Layout
+
+vidcap = cv2.VideoCapture(your_path)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#calculo la cantidad de frames
+\end_layout
+
+\begin_layout Plain Layout
+
+total_frames = str(int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT)))
+\end_layout
+
+\begin_layout Plain Layout
+
+#los nombres de las imagenes deben tener las misma cantidad de caracteres
+ ej 000.jpg, 001.jpg, 025.jpg, 712.jpg
+\end_layout
+
+\begin_layout Plain Layout
+
+length= len(total_frames)
+\end_layout
+
+\begin_layout Plain Layout
+
+nombre=""
+\end_layout
+
+\begin_layout Plain Layout
+
+success,image = vidcap.read()
+\end_layout
+
+\begin_layout Plain Layout
+
+count = 1
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+try:
+\end_layout
+
+\begin_layout Plain Layout
+
+    while success:
+\end_layout
+
+\begin_layout Plain Layout
+
+        nombre=str(count)
+\end_layout
+
+\begin_layout Plain Layout
+
+#se la el formato al nombre
+\end_layout
+
+\begin_layout Plain Layout
+
+        while (len(nombre) != length):
+\end_layout
+
+\begin_layout Plain Layout
+
+            nombre="0"+nombre
+\end_layout
+
+\begin_layout Plain Layout
+
+#Se le defina la ruta completa :v
+\end_layout
+
+\begin_layout Plain Layout
+
+        cv2.imwrite(your_destiniy_path+nombre+".jpg", image)
+\end_layout
+
+\begin_layout Plain Layout
+
+        success,image = vidcap.read()
+\end_layout
+
+\begin_layout Plain Layout
+
+        count += 1
+\end_layout
+
+\begin_layout Plain Layout
+
+except ValueError:
+\end_layout
+
+\begin_layout Plain Layout
+
+    print(-1)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Conversión
+\end_layout
+
+\begin_layout Standard
+El segundo módulo es el que se encarga de la transformación de los espacios
+ de colores para un frame.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Pasamos del modelo RGB a HSI
+\end_layout
+
+\begin_layout Enumerate
+Separamos los canales, de este modo podremos trabajar con el canal H
+\end_layout
+
+\begin_layout Enumerate
+modificamos un rango de valores del canal H (por ejemplo aquellos que sean
+ los correspondidos a un color azul) 
+\end_layout
+
+\begin_layout Enumerate
+Reunimos los canales del HSI
+\end_layout
+
+\begin_layout Enumerate
+Pasamos del modelo HSI a RGB
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Python,basicstyle={\small},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#!/usr/bin/python
+\end_layout
+
+\begin_layout Plain Layout
+
+# -*- coding: utf-8 -*-
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import numpy as np
+\end_layout
+
+\begin_layout Plain Layout
+
+import cv2
+\end_layout
+
+\begin_layout Plain Layout
+
+import matplotlib.pyplot as plt
+\end_layout
+
+\begin_layout Plain Layout
+
+import math
+\end_layout
+
+\begin_layout Plain Layout
+
+import sys
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def rgb2hsi(rgb):
+\end_layout
+
+\begin_layout Plain Layout
+
+    # separar
+\end_layout
+
+\begin_layout Plain Layout
+
+    R,G,B= cv2.split(rgb)
+\end_layout
+
+\begin_layout Plain Layout
+
+    # normalizar
+\end_layout
+
+\begin_layout Plain Layout
+
+    R =R/255
+\end_layout
+
+\begin_layout Plain Layout
+
+    G =G/255
+\end_layout
+
+\begin_layout Plain Layout
+
+    B =B/255
+\end_layout
+
+\begin_layout Plain Layout
+
+    # cantidad de elementos
+\end_layout
+
+\begin_layout Plain Layout
+
+    x=R.shape[0]
+\end_layout
+
+\begin_layout Plain Layout
+
+    y=R.shape[1]
+\end_layout
+
+\begin_layout Plain Layout
+
+    # crear arrays
+\end_layout
+
+\begin_layout Plain Layout
+
+    r=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    g=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    b=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    H=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    S=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    I=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    # recorrer
+\end_layout
+
+\begin_layout Plain Layout
+
+    for i in range(0, x):
+\end_layout
+
+\begin_layout Plain Layout
+
+        for j in range(0,y):
+\end_layout
+
+\begin_layout Plain Layout
+
+            # calcular rgb
+\end_layout
+
+\begin_layout Plain Layout
+
+            divisor=R[i,j]+G[i,j]+B[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+            I[i,j]=divisor/3.0
+\end_layout
+
+\begin_layout Plain Layout
+
+            if (divisor != 0.0):
+\end_layout
+
+\begin_layout Plain Layout
+
+                r[i,j]=R[i,j]/divisor
+\end_layout
+
+\begin_layout Plain Layout
+
+                g[i,j]=G[i,j]/divisor
+\end_layout
+
+\begin_layout Plain Layout
+
+                b[i,j]=B[i,j]/divisor
+\end_layout
+
+\begin_layout Plain Layout
+
+                
+\end_layout
+
+\begin_layout Plain Layout
+
+            # calcular RGB
+\end_layout
+
+\begin_layout Plain Layout
+
+            if (R[i,j]==G[i,j]) and (G[i,j]==B[i,j]):
+\end_layout
+
+\begin_layout Plain Layout
+
+                H[i,j]=0
+\end_layout
+
+\begin_layout Plain Layout
+
+                S[i,j]=0
+\end_layout
+
+\begin_layout Plain Layout
+
+            else:
+\end_layout
+
+\begin_layout Plain Layout
+
+                argum=(R[i,j]-G[i,j])*(R[i,j]-G[i,j])+(R[i,j]-B[i,j])*(G[i,j]-B[
+i,j])
+\end_layout
+
+\begin_layout Plain Layout
+
+                num=0.5*((R[i,j]-G[i,j]) + (R[i,j]-B[i,j]))
+\end_layout
+
+\begin_layout Plain Layout
+
+                w=num/math.sqrt(argum)
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (w>1): w=1
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (w<-1): w=-1
+\end_layout
+
+\begin_layout Plain Layout
+
+                    
+\end_layout
+
+\begin_layout Plain Layout
+
+                H[i,j]=math.acos(w)
+\end_layout
+
+\begin_layout Plain Layout
+
+                if H[i,j] < 0:
+\end_layout
+
+\begin_layout Plain Layout
+
+                    print('b')
+\end_layout
+
+\begin_layout Plain Layout
+
+                    break
+\end_layout
+
+\begin_layout Plain Layout
+
+                    
+\end_layout
+
+\begin_layout Plain Layout
+
+                if B[i,j] > G[i,j]:
+\end_layout
+
+\begin_layout Plain Layout
+
+                    H[i,j]=2*math.pi-H[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (r[i,j] <= g[i,j]) & (r[i,j] <= b[i,j]): 
+\end_layout
+
+\begin_layout Plain Layout
+
+                    S[i,j]=1-3*r[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (g[i,j] <= r[i,j]) & (g[i,j] <= b[i,j]): 
+\end_layout
+
+\begin_layout Plain Layout
+
+                    S[i,j]=1-3*g[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (b[i,j] <= r[i,j]) & (b[i,j] <= g[i,j]): 
+\end_layout
+
+\begin_layout Plain Layout
+
+                    S[i,j]=1-3*b[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                    
+\end_layout
+
+\begin_layout Plain Layout
+
+    H*=179
+\end_layout
+
+\begin_layout Plain Layout
+
+    S*=255
+\end_layout
+
+\begin_layout Plain Layout
+
+    I*=255
+\end_layout
+
+\begin_layout Plain Layout
+
+    hsi=cv2.merge([H,S,I])
+\end_layout
+
+\begin_layout Plain Layout
+
+    return hsi
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def hsi2rgb(hsi):
+\end_layout
+
+\begin_layout Plain Layout
+
+    H,S,I = cv2.split(hsi)
+\end_layout
+
+\begin_layout Plain Layout
+
+    H=H/179
+\end_layout
+
+\begin_layout Plain Layout
+
+    S=S/255
+\end_layout
+
+\begin_layout Plain Layout
+
+    I=I/255
+\end_layout
+
+\begin_layout Plain Layout
+
+    x=H.shape[0]
+\end_layout
+
+\begin_layout Plain Layout
+
+    y=H.shape[1]
+\end_layout
+
+\begin_layout Plain Layout
+
+    R=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    G=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    B=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    r=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    g=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+    b=np.empty([x,y])
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+       
+\end_layout
+
+\begin_layout Plain Layout
+
+    for i in range(0, x):
+\end_layout
+
+\begin_layout Plain Layout
+
+        for j in range(0,y):
+\end_layout
+
+\begin_layout Plain Layout
+
+            if (S[i,j] >1): S[i,j]=1
+\end_layout
+
+\begin_layout Plain Layout
+
+            if (I[i,j] >1): I[i,j]=1
+\end_layout
+
+\begin_layout Plain Layout
+
+            if (S[i,j] ==0): 
+\end_layout
+
+\begin_layout Plain Layout
+
+                R[i,j]=I[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                G[i,j]=I[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                B[i,j]=I[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+            else:
+\end_layout
+
+\begin_layout Plain Layout
+
+                ums=(1-S[i,j])/3
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (H[i,j]>=0) and (H[i,j]<np.radians(120)):
+\end_layout
+
+\begin_layout Plain Layout
+
+                    b[i,j]=ums
+\end_layout
+
+\begin_layout Plain Layout
+
+                    r[i,j]= 1/3*(1+(S[i,j]*np.cos(H[i,j])/np.cos(np.radians(60)-H[i
+,j])))
+\end_layout
+
+\begin_layout Plain Layout
+
+                    g[i,j]=1-r[i,j]-b[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                elif (H[i,j]>=np.radians(120)) and (H[i,j]<np.radians(240)):
+\end_layout
+
+\begin_layout Plain Layout
+
+                    H[i,j]-=np.radians(120)
+\end_layout
+
+\begin_layout Plain Layout
+
+                    r[i,j]=ums
+\end_layout
+
+\begin_layout Plain Layout
+
+                    g[i,j]=1/3*(1+(S[i,j]*np.cos(H[i,j])/np.cos(np.radians(60)-H[i,
+j])))
+\end_layout
+
+\begin_layout Plain Layout
+
+                    b[i,j]=1-r[i,j]-g[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                elif (H[i,j]>=np.radians(240)) and (H[i,j]<np.radians(360)):
+\end_layout
+
+\begin_layout Plain Layout
+
+                    H[i,j]-=np.radians(240)
+\end_layout
+
+\begin_layout Plain Layout
+
+                    g[i,j]=ums
+\end_layout
+
+\begin_layout Plain Layout
+
+                    b[i,j]=1/3*(1+(S[i,j]*np.cos(H[i,j])/np.cos(np.radians(60)-H[i,
+j])))
+\end_layout
+
+\begin_layout Plain Layout
+
+                    r[i,j]=1-g[i,j]-b[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                else:
+\end_layout
+
+\begin_layout Plain Layout
+
+                    print("fuera de rango")
+\end_layout
+
+\begin_layout Plain Layout
+
+                    break
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (r[i,j]<0): r[i,j]=0
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (g[i,j]<0): g[i,j]=0
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (b[i,j]<0): b[i,j]=0
+\end_layout
+
+\begin_layout Plain Layout
+
+                R[i,j]=3*I[i,j]*r[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                G[i,j]=3*I[i,j]*g[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                B[i,j]=3*I[i,j]*b[i,j]
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (R[i,j]>1): R[i,j]=1
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (G[i,j]>1): G[i,j]=1
+\end_layout
+
+\begin_layout Plain Layout
+
+                if (B[i,j]>1): B[i,j]=1 
+\end_layout
+
+\begin_layout Plain Layout
+
+    rgb=cv2.merge([R,G,B])*255
+\end_layout
+
+\begin_layout Plain Layout
+
+    return rgb.astype(np.uint8)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+your_path=sys.argv[1]
+\end_layout
+
+\begin_layout Plain Layout
+
+#your_destiniy_path=sys.argv[2]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+frame2 = cv2.imread(your_path)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+mi_rgb= cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+\end_layout
+
+\begin_layout Plain Layout
+
+# Realizar conversión
+\end_layout
+
+\begin_layout Plain Layout
+
+mi_hsi= rgb2hsi(mi_rgb) # RGB a HSI 
+\end_layout
+
+\begin_layout Plain Layout
+
+h,s,i = cv2.split(mi_hsi)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Realizar el cambio de color
+\end_layout
+
+\begin_layout Plain Layout
+
+h=np.where((h>=640/179) & (h<=822/179),30/179,h)
+\end_layout
+
+\begin_layout Plain Layout
+
+mi_hsi=cv2.merge([h,s,i])
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+n_rgb= hsi2rgb(mi_hsi) # HSI a RGB
+\end_layout
+
+\begin_layout Plain Layout
+
+plt.imshow(n_rgb)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Guardar
+\end_layout
+
+\begin_layout Plain Layout
+
+nuevo_bgr=cv2.cvtColor(n_rgb, cv2.COLOR_RGB2BGR)
+\end_layout
+
+\begin_layout Plain Layout
+
+cv2.imwrite(your_path,nuevo_bgr)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Reconstrucción
+\end_layout
+
+\begin_layout Standard
+El tercer módulo realiza la reconstrucción del video en base a los frames
+ modificados, Se debe tener en cuenta que la reconstrucción de este tipo
+ de video suele ser lenta y será optimizada por medio del cuarto módulo.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Python,basicstyle={\small},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+import cv2
+\end_layout
+
+\begin_layout Plain Layout
+
+import os
+\end_layout
+
+\begin_layout Plain Layout
+
+import sys
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Arguments
+\end_layout
+
+\begin_layout Plain Layout
+
+#dir_path = directorio donde se encuentran los frames
+\end_layout
+
+\begin_layout Plain Layout
+
+#ext = extención de los frames
+\end_layout
+
+\begin_layout Plain Layout
+
+#output = nombre del archivo  ruta_de_archivo/"output.mp4"
+\end_layout
+
+\begin_layout Plain Layout
+
+#inicio= primer frame desde el que se reconstruye el video
+\end_layout
+
+\begin_layout Plain Layout
+
+#fin= último frame hasta el que se construye el video
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def rebuild(dir_path,ext,output,inicio,fin):
+\end_layout
+
+\begin_layout Plain Layout
+
+	try:
+\end_layout
+
+\begin_layout Plain Layout
+
+		mylistdir=os.listdir(dir_path)
+\end_layout
+
+\begin_layout Plain Layout
+
+		mylistdir.sort()
+\end_layout
+
+\begin_layout Plain Layout
+
+		mylistdir.pop(0)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		images = []
+\end_layout
+
+\begin_layout Plain Layout
+
+		for f in mylistdir:
+\end_layout
+
+\begin_layout Plain Layout
+
+		    if f.endswith(ext):
+\end_layout
+
+\begin_layout Plain Layout
+
+		        images.append(f)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Determina las dimensiones
+\end_layout
+
+\begin_layout Plain Layout
+
+		image_path = os.path.join(dir_path, images[0])
+\end_layout
+
+\begin_layout Plain Layout
+
+		frame = cv2.imread(image_path)
+\end_layout
+
+\begin_layout Plain Layout
+
+		cv2.imshow('video',frame)
+\end_layout
+
+\begin_layout Plain Layout
+
+		height, width, channels = frame.shape
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Define el codec
+\end_layout
+
+\begin_layout Plain Layout
+
+		fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
+\end_layout
+
+\begin_layout Plain Layout
+
+		out = cv2.VideoWriter(output, fourcc, 20.0, (width, height))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		for x in xrange(inicio,fin):
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		    image_path = dir_path+images[x]
+\end_layout
+
+\begin_layout Plain Layout
+
+		    frame = cv2.imread(image_path)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		    out.write(frame) 
+\end_layout
+
+\begin_layout Plain Layout
+
+		    cv2.imshow('video',frame)
+\end_layout
+
+\begin_layout Plain Layout
+
+		    if (cv2.waitKey(1) & 0xFF) == ord('q'):
+\end_layout
+
+\begin_layout Plain Layout
+
+		        break
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		out.release()
+\end_layout
+
+\begin_layout Plain Layout
+
+		cv2.destroyAllWindows()
+\end_layout
+
+\begin_layout Plain Layout
+
+		return True
+\end_layout
+
+\begin_layout Plain Layout
+
+	except:
+\end_layout
+
+\begin_layout Plain Layout
+
+		return False
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+your_origin_path=str(sys.argv[1])
+\end_layout
+
+\begin_layout Plain Layout
+
+your_extension=str(sys.argv[2])
+\end_layout
+
+\begin_layout Plain Layout
+
+your_destiny_path=str(sys.argv[3])
+\end_layout
+
+\begin_layout Plain Layout
+
+your_init=int(sys.argv[4])
+\end_layout
+
+\begin_layout Plain Layout
+
+your_end=int(sys.argv[5])
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+#your_origin_path="/home/stark28/python_projects/paralelo-proc-img/img-tafirol/"
+\end_layout
+
+\begin_layout Plain Layout
+
+#your_extension=".jpg"
+\end_layout
+
+\begin_layout Plain Layout
+
+#your_destiny_path="/home/stark28/python_projects/paralelo-proc-img/img-tafirol/
+output.mp4"
+\end_layout
+
+\begin_layout Plain Layout
+
+#your_init=1
+\end_layout
+
+\begin_layout Plain Layout
+
+#your_end=329
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+rebuild(your_origin_path,your_extension,your_destiny_path,your_init,your_end)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Control de ejecución
+\end_layout
+
+\begin_layout Standard
+Para poder aprovechar perfectamente todas las capacidades del ordenador
+ en donde se ejecuta, podemos paralelizar la ejecución del módulo anterior.
+ Consideremos lo siguiente, contamos con un ordenador con 4 procesadores,
+ entonces a cada procesador le daremos una imagen para que la transforme,
+ en un lugar de encargarle a un solo procesador todas las imágenes.
+ Quien gobierna la ejecución de los módulos desarrollados en Python, es
+ un código escrito en C++, este último es quien llama a los módulos mediante
+ llamadas al sistema, y es el encargado de distribuir el procesamiento y
+ realizar el paralelismo.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language={C++},basicstyle={\small},breaklines=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#include <omp.h>
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <stdio.h>      /* printf */
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <stdlib.h>     /* system, NULL, EXIT_FAILURE */
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <string>
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <iostream>
+\end_layout
+
+\begin_layout Plain Layout
+
+#include <time.h>
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+using namespace std;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+int main (int argc, char **argv)
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+  std::string origindir = argv[1];
+\end_layout
+
+\begin_layout Plain Layout
+
+  std::string destdir = argv[2];
+\end_layout
+
+\begin_layout Plain Layout
+
+  int cantidad = atoi(argv[3]);
+\end_layout
+
+\begin_layout Plain Layout
+
+  std::string cant_str = argv[3];
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+  printf ("Checking if processor is available...
+\backslash
+n");
+\end_layout
+
+\begin_layout Plain Layout
+
+  time_t mytime = time(NULL);
+\end_layout
+
+\begin_layout Plain Layout
+
+  char * time_str = ctime(&mytime);
+\end_layout
+
+\begin_layout Plain Layout
+
+  printf("Current Time : %s
+\backslash
+n", time_str);
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+  std::string my_command="python get_frames.py "+ origindir + " " + destdir;
+\end_layout
+
+\begin_layout Plain Layout
+
+  system ((my_command).c_str());
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+  printf("enter to a parallel region
+\backslash
+n");
+\end_layout
+
+\begin_layout Plain Layout
+
+ #pragma omp parallel for num_threads (4)
+\end_layout
+
+\begin_layout Plain Layout
+
+  for (int i=1;i<=cantidad; i++){ //modificar la costante n para poder hacer
+ independiente de los frames
+\end_layout
+
+\begin_layout Plain Layout
+
+      std::string name = to_string(i);
+\end_layout
+
+\begin_layout Plain Layout
+
+      while(cant_str.length() != name.length())
+\end_layout
+
+\begin_layout Plain Layout
+
+      {
+\end_layout
+
+\begin_layout Plain Layout
+
+          name= "0"+name;
+\end_layout
+
+\begin_layout Plain Layout
+
+      }
+\end_layout
+
+\begin_layout Plain Layout
+
+    std::string my_command2="python rgb_hsv.py " + destdir +"/"+ name +".jpg";
+\end_layout
+
+\begin_layout Plain Layout
+
+    system ((my_command2).c_str());    
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    my_command="python reconstruir.py "+ destdir +" .jpg "+destdir+"output.mp4
+ 1 " + to_string(cantidad); //cambiar este hardcode
+\end_layout
+
+\begin_layout Plain Layout
+
+    system ((my_command).c_str());
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+    time_t mytime2 = time(NULL);
+\end_layout
+
+\begin_layout Plain Layout
+
+    char * time_str2 = ctime(&mytime2);
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+    printf("Current Time : %s
+\backslash
+n", time_str2);
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+  return 0;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Resultados experimentales
+\end_layout
+
+\begin_layout Subsection
+Primeros intentos con HSV
+\end_layout
+
+\begin_layout Standard
+Probamos con realizarle el cambio de un valor de H (de un HSV) para una
+ imagen simple [6]
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/img/boy.png
+	lyxscale 25
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/boy.png
+	lyxscale 25
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Alterar único frame con HSV
+\end_layout
+
+\begin_layout Standard
+Primero se ha probado realizando el cambio de valores usando RGB-HSV/HSV-RGB
+ solamente usando un frame del video [7] y luego con todos los frames [8]
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/img/5.jpg
+	lyxscale 25
+	scale 25
+	groupId img
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/camiseta.png
+	lyxscale 25
+	scale 25
+	groupId img
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Alterar único frame con HSI
+\end_layout
+
+\begin_layout Standard
+Prueba realizada usando la conversión RGB-HSI/HSI-RGB para un único frame
+ [9] y para un segmento de video [10].
+ Se hace uso plenamente del código expuesto.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/hsi.png
+	lyxscale 25
+	scale 25
+	groupId img
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Bibliografia:
+\end_layout
+
+\begin_layout Itemize
+[1] https://tesis.ipn.mx/bitstream/handle/123456789/14571/TESIS.pdf?sequence=1&isAl
+lowed=y
+\end_layout
+
+\begin_layout Itemize
+[2] https://www.top500.org/lists/2018/06/ 
+\end_layout
+
+\begin_layout Itemize
+[3] “Uso del sistema HSI para asignar falso color a objetos en imagenes
+ digitales” http://www.scielo.org.mx/pdf/rmfe/v54n2/v54n2a11.pdf 
+\end_layout
+
+\begin_layout Itemize
+[4] “Uso del sistema HSI para asignar falso color a objetos en imagenes
+ digitales” http://www.scielo.org.mx/pdf/rmfe/v54n2/v54n2a11.pdf 
+\end_layout
+
+\begin_layout Itemize
+[5] Espacios de Color RGB, HSI y sus Generalizaciones.
+ Alonso Paz.
+ https://inaoe.repositorioinstitucional.mx/jspui/bitstream/1009/362/1/AlonsoPeMA.pd
+f
+\end_layout
+
+\begin_layout Itemize
+[6] https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_04_test.ipyn
+b
+\end_layout
+
+\begin_layout Itemize
+[7] Código: https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_04-
+HSV.ipynb
+\end_layout
+
+\begin_layout Itemize
+[8] Video resultado: https://youtu.be/wPPqC1ZZzk8
+\end_layout
+
+\begin_layout Itemize
+[9] Código: https://github.com/jrodrigopuca/procesamiento-img/blob/master/RGB-HSI.
+ipynb
+\end_layout
+
+\begin_layout Itemize
+[10] Video: https://youtu.be/UI5y_p6d0z8
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,729 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Híbrido sobre reconocimiento de rostro 
+\end_layout
+
+\begin_layout Author
+Juan Puca, Aaron Soria, Nicolás de Lima
+\end_layout
+
+\begin_layout Section
+Introducción
+\end_layout
+
+\begin_layout Standard
+La composición de imágenes hibridas puede sintetizarse en un proceso que
+ consiste: 
+\end_layout
+
+\begin_layout Itemize
+Hacer pasar una primera foto por un filtro pasa bajos, que da como salida
+ es una imagen borrosa 
+\end_layout
+
+\begin_layout Itemize
+La segunda imagen se la hace pasar por un filtro pasa altos, y este último
+ entrega una imagen en la podemos pareciar el contorno de los objetos.
+ 
+\end_layout
+
+\begin_layout Itemize
+Superponer las dos imágenes.
+ 
+\end_layout
+
+\begin_layout Standard
+El observador de la imagen conseguirá una percepción distinta, dependiendo
+ de la distancia que tome para apreciar la imagen Actualmente se han utilizado
+ para la medicina, específicamente la medicina nuclear, asi lo demuestra
+ la primera jornada nacional de imágenes hibridas en medicina nuclear, realizada
+s el 21 y 22 de noviembre de 2017.[1]
+\end_layout
+
+\begin_layout Section
+Experiencia
+\end_layout
+
+\begin_layout Subsection
+Módulo 1: Consumir API
+\end_layout
+
+\begin_layout Standard
+Múltiples sitios webs ponen a disposición un número limitado de imágenes,
+ las cuales pueden ser utilizadas con fines académicos.
+ A su vez, estos sitios proporcionan su propia API/REST, con el fin de facilitar
+ el trabajo.
+ Con esto solo se debemos consumir los servicios que nos proporciona el
+ proveedor de una manera responsable.
+\end_layout
+
+\begin_layout Standard
+Actividades que realiza este módulo:
+\end_layout
+
+\begin_layout Enumerate
+Realizará una solicitud de datos a un servidor
+\end_layout
+
+\begin_layout Enumerate
+Obtendrá la respuesta
+\end_layout
+
+\begin_layout Enumerate
+Guardará la imagen
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def consumirAPI(dirFile):
+\end_layout
+
+\begin_layout Plain Layout
+
+    # Consumir API
+\end_layout
+
+\begin_layout Plain Layout
+
+    url='https://randomuser.me/api/'
+\end_layout
+
+\begin_layout Plain Layout
+
+    respuesta=requests.get(url)
+\end_layout
+
+\begin_layout Plain Layout
+
+    data=json.loads(respuesta.content)
+\end_layout
+
+\begin_layout Plain Layout
+
+    results=data["results"]
+\end_layout
+
+\begin_layout Plain Layout
+
+    src=results[0]["picture"]["large"]
+\end_layout
+
+\begin_layout Plain Layout
+
+    print(src)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    # Traer imagen del API
+\end_layout
+
+\begin_layout Plain Layout
+
+    respuesta = requests.get(src)
+\end_layout
+
+\begin_layout Plain Layout
+
+    if respuesta.status_code == 200:
+\end_layout
+
+\begin_layout Plain Layout
+
+        with open(dirFile, 'wb') as f:
+\end_layout
+
+\begin_layout Plain Layout
+
+            f.write(respuesta.content)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Módulo 2: Reconocimiento de Rostros
+\end_layout
+
+\begin_layout Standard
+Aprovechando investigaciones previas, y soluciones existentes, la librería
+ de openCV pre-instalados clasificadores del tipo Haar Cascade: es un método
+ efectivo de detección de objetos propuesto por Paul Viola y Michael Jones
+ en su artículo, "Detección rápida de objetos usando una cascada aumentada
+ de características simples" en 2001.
+ Es un enfoque basado en el machine learning donde el algoritmo es entrenado
+ a partir de muchas imágenes positivas y negativas.
+ Luego se utiliza para detectar objetos en otras imágenes.[2] 
+\end_layout
+
+\begin_layout Standard
+LBP Cascade: el concepto consiste en etiquetar los píxeles de una imagen
+ mediante el umbral de la vecindad de 3 por 3 de cada píxel con el valor
+ del píxel central y considerando el resultado como un número binario.
+ Se confecciona un histograma con 256 intervalos, a cada intervalo le correspond
+e una etiqueta, que es la que le asignamos a los pixeles y esto puede ser
+ usando como un descriptor de texturas.[3] 
+\end_layout
+
+\begin_layout Standard
+El clasificador del tipo Haar es mucho más preciso reconociendo rostros
+ y tiene una taza muy baja de falsos de positivos, como aspectos negativos
+ cabe destacar que es un algoritmo computacionalmente complejo y lento,
+ además de que requiere un entrenamiento previo y tiene limitaciones respecto
+ a la iluminación.
+ El clasificado del tipo LBP es computacionalmente mucho más eficiente,
+ se entrena en mucho menos tiempo y maneja mucho mejor la iluminación, sin
+ embargo es menos preciso y tiene un taza de falsos positivos considerable.
+ La elección del clasificador dependerá de aquellos aspectos que se estén
+ dispuestos a renunciar.
+ 
+\end_layout
+
+\begin_layout Standard
+Pasos que realiza el módulo:
+\end_layout
+
+\begin_layout Enumerate
+Obtiene los datos para reconocimiento de un xml
+\end_layout
+
+\begin_layout Enumerate
+Aplica el clasificador
+\end_layout
+
+\begin_layout Enumerate
+Devuelve los puntos de origen del rostro (x,y) y tamaño del rostro (w,h)
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def reconocer(imagen):
+\end_layout
+
+\begin_layout Plain Layout
+
+    # Reconocer rostro
+\end_layout
+
+\begin_layout Plain Layout
+
+    face_cascade = cv2.CascadeClassifier('xml/haarcascade_frontalface_default.xml'
+)
+\end_layout
+
+\begin_layout Plain Layout
+
+    face = face_cascade.detectMultiScale(imagen, 1.3, 5)
+\end_layout
+
+\begin_layout Plain Layout
+
+    x=y=w=h=0
+\end_layout
+
+\begin_layout Plain Layout
+
+    if len(face):
+\end_layout
+
+\begin_layout Plain Layout
+
+        x= face[0][0]
+\end_layout
+
+\begin_layout Plain Layout
+
+        y= face[0][1]
+\end_layout
+
+\begin_layout Plain Layout
+
+        w= face[0][2]
+\end_layout
+
+\begin_layout Plain Layout
+
+        h= face[0][3]
+\end_layout
+
+\begin_layout Plain Layout
+
+    return x,y,w,h
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Módulo 3: Generación de Imagen Hibrida
+\end_layout
+
+\begin_layout Standard
+Este módulo :
+\end_layout
+
+\begin_layout Enumerate
+Requiere imagen, máscara, puntos en donde se encuentra el rostro
+\end_layout
+
+\begin_layout Enumerate
+Realizará los filtros pasa-altos (laplaciano), pasa-bajos (gaussiano)
+\end_layout
+
+\begin_layout Enumerate
+Aplicará los filtros a las imágenes
+\end_layout
+
+\begin_layout Enumerate
+Cambiará el tamaño de la máscara para adecuarlo al tamaño del rostro
+\end_layout
+
+\begin_layout Enumerate
+Va a sobreponer la máscara sobre la imagen de fondo
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+def mezclar(imagen, mask, x, y, w, h):
+\end_layout
+
+\begin_layout Plain Layout
+
+    # filtros
+\end_layout
+
+\begin_layout Plain Layout
+
+    blur = cv2.blur(imagen,(17,17))
+\end_layout
+
+\begin_layout Plain Layout
+
+    laplacian = cv2.Laplacian(mask,cv2.CV_8U,ksize=17)
+\end_layout
+
+\begin_layout Plain Layout
+
+    # mezclas
+\end_layout
+
+\begin_layout Plain Layout
+
+    mezcla5= cv2.addWeighted(imagen,0.6,blur,0.4,0)
+\end_layout
+
+\begin_layout Plain Layout
+
+    mezcla6= cv2.addWeighted(mask,0.8,laplacian,0.2,0)
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+    parteMezcla= cv2.resize(mezcla6,(w,h))
+\end_layout
+
+\begin_layout Plain Layout
+
+    posx=x
+\end_layout
+
+\begin_layout Plain Layout
+
+    posy=y 
+\end_layout
+
+\begin_layout Plain Layout
+
+    rows,cols=parteMezcla.shape
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\end_layout
+
+\begin_layout Plain Layout
+
+    mezcla5[posx:rows+posx:1, posy:cols+posy:1]=cv2.addWeighted(mezcla5[posx:rows
++posx:1, posy:cols+posy:1],0.7,parteMezcla,0.3,0)
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+    return mezcla5
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Módulo 4: Implementación
+\end_layout
+
+\begin_layout Standard
+Para aplicar los módulos anteriores, se requerirá el siguiente código, que
+ permitirá:
+\end_layout
+
+\begin_layout Enumerate
+Obtener imagen (puede ser local o haciendo uso del módulo 1)
+\end_layout
+
+\begin_layout Enumerate
+Crear imagen en gris (tanto para la imagen de fondo como para máscara)
+\end_layout
+
+\begin_layout Enumerate
+Llamar al módulo 2 y 3
+\end_layout
+
+\begin_layout Enumerate
+Probar si la imagen se ha logrado reconocer el rostro
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+# Obtener imagen
+\end_layout
+
+\begin_layout Plain Layout
+
+file="result/api-1.jpg"
+\end_layout
+
+\begin_layout Plain Layout
+
+consumirAPI(file)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Crear gris del imagen base
+\end_layout
+
+\begin_layout Plain Layout
+
+imagen = cv2.imread(file)
+\end_layout
+
+\begin_layout Plain Layout
+
+rgbImagen= cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Crear gris de la máscara
+\end_layout
+
+\begin_layout Plain Layout
+
+mask = cv2.imread('img/mask.jpg')
+\end_layout
+
+\begin_layout Plain Layout
+
+rgbMask= cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+# Realizar el hibrido
+\end_layout
+
+\begin_layout Plain Layout
+
+x, y, w, h = reconocer(imagen)
+\end_layout
+
+\begin_layout Plain Layout
+
+if x!=0:
+\end_layout
+
+\begin_layout Plain Layout
+
+    hibrido= mezclar(rgbImagen, rgbMask, x, y, w, h)
+\end_layout
+
+\begin_layout Plain Layout
+
+    plt.imshow(hibrido, cmap='gray')
+\end_layout
+
+\begin_layout Plain Layout
+
+    cv2.imwrite("result/sv-4.png", hibrido)
+\end_layout
+
+\begin_layout Plain Layout
+
+else:
+\end_layout
+
+\begin_layout Plain Layout
+
+    print('buscar otra imagen')
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Resultados
+\end_layout
+
+\begin_layout Standard
+Primeras pruebas [4]
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/h-3.png
+	lyxscale 30
+	scale 30
+	groupId im
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/h-2.png
+	lyxscale 30
+	scale 30
+	groupId im
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/h-1.png
+	lyxscale 30
+	scale 30
+	groupId im
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Reconocimiento de rostro [5]
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/sv-1.png
+	lyxscale 50
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Creando el hibrido de una  imagen local [6]
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/sv-5.png
+	lyxscale 50
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Creando el hibrido de una imagen provista por un API [6]
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/result/sv-4.png
+	lyxscale 50
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Bibliografía
+\end_layout
+
+\begin_layout Standard
+[1] http://www.fuesmen.edu.ar/1-jornada-nacional-de-imagenes-hibridas-en-medicina-n
+uclear
+\end_layout
+
+\begin_layout Standard
+[2] https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html
+\end_layout
+
+\begin_layout Standard
+[3] http://cs229.stanford.edu/proj2008/Jo-FaceDetectionUsingLBPfeatures.pdf
+\end_layout
+
+\begin_layout Standard
+[4] https://github.com/jrodrigopuca/procesamiento-img/blob/master/hibrido.ipynb
+\end_layout
+
+\begin_layout Standard
+[5] https://github.com/jrodrigopuca/procesamiento-img/blob/master/reconocer_rostr
+o.ipynb
+\end_layout
+
+\begin_layout Standard
+[6] https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_06.ipynb
+\end_layout
+
+\begin_layout Section
+Conclusiones 
+\end_layout
+
+\begin_layout Standard
+Con las capacidades tecnológicas actuales, y la facilidad de acceso a las
+ mismas, permiten que tanto aficionados como investigadores colaboren en
+ el desarrollo de soluciones en campos tan importantes como son la medicina
+ en el capo del diagnóstico por imagen o la forensia digital.
+ 
+\end_layout
+
+\end_body
+\end_document
