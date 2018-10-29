@@ -55,7 +55,7 @@ Resultado del cambio con RGB-HSI/HSI-RGB [video para descargar](https://github.c
 
 [Código Base para la Galería](https://github.com/jrodrigopuca/tp-imagen/blob/master/procesador.py)
 
-Galería de los puntos solicitados (muy pronto)
+[Puntos del TP3](https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_05.ipynb)
 
 ## TP4: Híbrido de imágenes con Filtros de suavizado y bordes
 ### Híbrido sobre reconocimiento de rostro
