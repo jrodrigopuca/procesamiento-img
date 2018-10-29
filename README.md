@@ -7,6 +7,8 @@ Actividades del curso de Postgrado
 ## TP 1: Detección de Shot en videos
 ### FutbolPY: detectar las transiciones de cámaras en partidos de fútbol
 
+![alt text](https://github.com/jrodrigopuca/procesamiento-img/raw/master/img/5.jpg "Resultado")
+
 [Repositorio con todas las pruebas realizadas](https://github.com/jrodrigopuca/futbolpy)
 
 [Código](https://github.com/jrodrigopuca/futbolpy/blob/master/video-modular.ipynb)
@@ -21,6 +23,8 @@ Video Resultados (para descargar):
 ## TP2: Color
 ### Usando conversion RGB-HSI/HSI-RGB con ejecución en paralelo para alterar color de camisetas en video
 
+![alt text](https://github.com/jrodrigopuca/procesamiento-img/raw/master/result/hsi.png "Resultado")
+
 [Paper](https://github.com/jrodrigopuca/procesamiento-img/blob/master/papers/color.pdf)
 
 [Primeros resultados](https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_04_test.ipynb)
@@ -29,10 +33,7 @@ Video Resultados (para descargar):
 
 Resultado del cambio con RGB-HSV/HSV-RGB [video para descargar](https://github.com/jrodrigopuca/procesamiento-img/blob/master/result/HSV.mp4)
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=wPPqC1ZZzk8
-" target="_blank"><img src="http://img.youtube.com/vi/wPPqC1ZZzk8.jpg" 
-alt="Resultado del cambio con RGB-HSV/HSV-RGB" width="240" height="180" border="10" /></a>
-
+[![Resultado del cambio con RGB-HSV/HSV-RGB](http://img.youtube.com/vi/wPPqC1ZZzk8/0.jpg)](http://www.youtube.com/watch?v=wPPqC1ZZzk8)
 
 [Código cambiar de color con RGB-HSI/HSI-RGB](https://github.com/jrodrigopuca/procesamiento-img/blob/master/RGB-HSI.ipynb)
 
@@ -40,12 +41,11 @@ alt="Resultado del cambio con RGB-HSV/HSV-RGB" width="240" height="180" border="
 
 Resultado del cambio con RGB-HSI/HSI-RGB [video para descargar](https://github.com/jrodrigopuca/procesamiento-img/blob/master/result/hsi.mp4)
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=UI5y_p6d0z8
-" target="_blank"><img src="http://img.youtube.com/vi/UI5y_p6d0z80.jpg" 
-alt="Resultado del cambio con RGB-HSI/HSI-RGB" width="240" height="180" border="10" /></a>
-
+[![Resultado del cambio con RGB-HSI/HSI-RGB](http://img.youtube.com/vi/UI5y_p6d0z8/0.jpg)](http://www.youtube.com/watch?v=UI5y_p6d0z8)
 
 ## TP3: Filtros Suavizado y Bordes
+
+![alt text](https://github.com/jrodrigopuca/procesamiento-img/raw/master/result/syp.png "Resultado")
 
 [Experimentando con Filtros](https://github.com/jrodrigopuca/procesamiento-img/blob/master/filtros.ipynb)
 
@@ -60,12 +60,13 @@ Galería de los puntos solicitados (muy pronto)
 ## TP4: Híbrido de imágenes con Filtros de suavizado y bordes
 ### Híbrido sobre reconocimiento de rostro
 
+![alt text](https://github.com/jrodrigopuca/procesamiento-img/raw/master/result/sv-5.png "Resultado")
+
 [Primeras pruebas](https://github.com/jrodrigopuca/procesamiento-img/blob/master/hibrido.ipynb)
 
 [Paper](https://github.com/jrodrigopuca/procesamiento-img/blob/master/papers/hibrido.pdf)
 
 [Código](https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_06.ipynb)
 
-Resultado:
 
-![alt text](https://github.com/jrodrigopuca/procesamiento-img/raw/master/result/sv-4.png "Logo Title Text 1")
+
