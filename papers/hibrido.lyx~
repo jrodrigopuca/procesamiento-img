@@ -152,6 +152,7 @@ Guardará la imagen
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "language=Python,basicstyle={\small\rmfamily},breaklines=true"
 inline false
 status open
 
@@ -285,6 +286,7 @@ Devuelve los puntos de origen del rostro (x,y) y tamaño del rostro (w,h)
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "language=Python,basicstyle={\small\rmfamily},breaklines=true"
 inline false
 status open
 
@@ -379,6 +381,7 @@ Va a sobreponer la máscara sobre la imagen de fondo
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "language=Python,basicstyle={\small\rmfamily},breaklines=true"
 inline false
 status open
 
@@ -495,6 +498,7 @@ Probar si la imagen se ha logrado reconocer el rostro
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "language=Python,basicstyle={\small\rmfamily},breaklines=true"
 inline false
 status open
 
@@ -639,6 +643,21 @@ Primeras pruebas [4]
 \end_layout
 
 \begin_layout Standard
+Máscara
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename F:/procesamiento-img/img/mask.jpg
+	lyxscale 50
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Reconocimiento de rostro [5]
 \end_layout
 
@@ -675,42 +694,10 @@ Creando el hibrido de una imagen provista por un API [6]
 \begin_layout Standard
 \begin_inset Graphics
 	filename F:/procesamiento-img/result/sv-4.png
-	lyxscale 50
-	scale 50
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-Bibliografía
-\end_layout
-
-\begin_layout Standard
-[1] http://www.fuesmen.edu.ar/1-jornada-nacional-de-imagenes-hibridas-en-medicina-n
-uclear
-\end_layout
-
-\begin_layout Standard
-[2] https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html
-\end_layout
-
-\begin_layout Standard
-[3] http://cs229.stanford.edu/proj2008/Jo-FaceDetectionUsingLBPfeatures.pdf
-\end_layout
-
-\begin_layout Standard
-[4] https://github.com/jrodrigopuca/procesamiento-img/blob/master/hibrido.ipynb
-\end_layout
-
-\begin_layout Standard
-[5] https://github.com/jrodrigopuca/procesamiento-img/blob/master/reconocer_rostr
-o.ipynb
-\end_layout
-
-\begin_layout Standard
-[6] https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_06.ipynb
 \end_layout
 
 \begin_layout Section
@@ -720,9 +707,46 @@ Conclusiones
 \begin_layout Standard
 Con las capacidades tecnológicas actuales, y la facilidad de acceso a las
  mismas, permiten que tanto aficionados como investigadores colaboren en
- el desarrollo de soluciones en campos tan importantes como son la medicina
- en el capo del diagnóstico por imagen o la forensia digital.
+ el desarrollo de soluciones de reconocimiento de rostros en campos tan
+ importantes como son la medicina en el capo del diagnóstico por imagen
+ o la forensia digital o como en este caso solo para entretenimiento.
+\end_layout
+
+\begin_layout Standard
+La implementación realizada permite tener un acercamiento similar a las
+ experiencias provistas por las grandes aplicaciones móviles como Snapchat
+ ó Instagram.
  
+\end_layout
+
+\begin_layout Section
+Bibliografía
+\end_layout
+
+\begin_layout Itemize
+[1] http://www.fuesmen.edu.ar/1-jornada-nacional-de-imagenes-hibridas-en-medicina-n
+uclear
+\end_layout
+
+\begin_layout Itemize
+[2] https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html
+\end_layout
+
+\begin_layout Itemize
+[3] http://cs229.stanford.edu/proj2008/Jo-FaceDetectionUsingLBPfeatures.pdf
+\end_layout
+
+\begin_layout Itemize
+[4] https://github.com/jrodrigopuca/procesamiento-img/blob/master/hibrido.ipynb
+\end_layout
+
+\begin_layout Itemize
+[5] https://github.com/jrodrigopuca/procesamiento-img/blob/master/reconocer_rostr
+o.ipynb
+\end_layout
+
+\begin_layout Itemize
+[6] https://github.com/jrodrigopuca/procesamiento-img/blob/master/dia_06.ipynb
 \end_layout
 
 \end_body
